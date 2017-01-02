@@ -1,0 +1,47 @@
+{
+  "name": "n86io/array-conf",
+  "description": "Manage configuration using arrays with validating keys and values.",
+  "license": "GPL-3.0+",
+  "keywords": [
+    "configuration"
+  ],
+  "authors": [
+    {
+      "name": "Viktor Firus",
+      "email": "v@n86.io"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "webmozart/assert": "^1.2"
+  },
+  "require-dev": {
+    "codeclimate/php-test-reporter": "dev-master",
+    "phpunit/phpunit": "^5.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "N86io\\ArrayConf\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "N86io\\ArrayConf\\Tests\\Unit\\": "build/tests/unit"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  },
+  "scripts": {
+    "test": [
+      "@composer install",
+      "./vendor/bin/phpunit -c build/tests/unit.xml --coverage-clover build/logs/clover.xml"
+    ],
+    "test-report": [
+      "@test",
+      "./vendor/bin/test-reporter"
+    ]
+  }
+}
