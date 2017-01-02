@@ -108,7 +108,7 @@ class Configuration implements ConfigurationInterface
                 continue;
             }
 
-            $this->addListConf($configuration, $key, $value, $type, $definition, $confKeyPath);
+            $this->addListConf($configuration, $key, $value, $definition, $confKeyPath);
         }
 
         $this->addDefault($configuration, $definition);
@@ -161,12 +161,11 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param array  $configuration
-     * @param mixed  $key
-     * @param mixed  $value
-     * @param string $type
-     * @param array  $definition
-     * @param array  $keyPath
+     * @param array $configuration
+     * @param mixed $key
+     * @param mixed $value
+     * @param array $definition
+     * @param array $keyPath
      *
      * @return bool
      */
@@ -174,31 +173,24 @@ class Configuration implements ConfigurationInterface
         array &$configuration,
         $key,
         $value,
-        string $type,
         array $definition,
         array $keyPath
-    ): bool {
-        if (TypeValidator::isTypeListConf($type)) {
-            foreach ($value as $listConfKey => $listConf) {
-                $listConfKeyPath = $keyPath;
-                $listConfKeyPath[] = $listConfKey;
+    ) {
+        foreach ($value as $listConfKey => $listConf) {
+            $listConfKeyPath = $keyPath;
+            $listConfKeyPath[] = $listConfKey;
 
-                if (empty($configuration[$key][$listConfKey])) {
-                    $configuration[$key][$listConfKey] = [];
-                }
-
-                $this->addToConfiguration(
-                    $configuration[$key][$listConfKey],
-                    $listConf,
-                    $definition[$key]['definition'],
-                    $listConfKeyPath
-                );
+            if (empty($configuration[$key][$listConfKey])) {
+                $configuration[$key][$listConfKey] = [];
             }
 
-            return true;
+            $this->addToConfiguration(
+                $configuration[$key][$listConfKey],
+                $listConf,
+                $definition[$key]['definition'],
+                $listConfKeyPath
+            );
         }
-
-        return false;
     }
 
     /**
