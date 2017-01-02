@@ -166,8 +166,6 @@ class Configuration implements ConfigurationInterface
      * @param mixed $value
      * @param array $definition
      * @param array $keyPath
-     *
-     * @return bool
      */
     private function addListConf(
         array &$configuration,
