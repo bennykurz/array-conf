@@ -1,5 +1,5 @@
-N86io/Hook documentation
-========================
+N86io/ArrayConf documentation
+=============================
 
 Configuration management which handles the setup and validation of a configuration consisting of keys and values stored
 in an array structure. It also handles the merging of two distinct configurations into one configuration.
@@ -10,7 +10,7 @@ Install
 For using this packages, please read `composer documentation <https://getcomposer.org/doc>`_ on how to use composer and
 packages for it.
 
-Package name for this hook package is ``n86io/array-conf``.
+Package name for this array-conf package is ``n86io/array-conf``.
 
 Example
 =======
