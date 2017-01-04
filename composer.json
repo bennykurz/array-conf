@@ -1,6 +1,6 @@
 {
   "name": "n86io/array-conf",
-  "description": "Manage configuration using arrays with validating keys and values.",
+  "description": "Configuration management which handles the setup and validation of a configuration consisting of keys and values stored in an array structure. It also handles the merging of two distinct configurations into one configuration.",
   "license": "GPL-3.0+",
   "keywords": [
     "configuration"

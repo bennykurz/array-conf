@@ -1,23 +1,24 @@
 N86io/Hook documentation
 ========================
 
-Manage configuration using arrays with validating keys and values.
+Configuration management which handles the setup and validation of a configuration consisting of keys and values stored
+in an array structure. It also handles the merging of two distinct configurations into one configuration.
 
 Install
 =======
 
-For using this packages, please read `composer documentation
-<https://getcomposer.org/doc>`_ how to use composer and packages for it.
+For using this packages, please read `composer documentation <https://getcomposer.org/doc>`_ on how to use composer and
+packages for it.
 
 Package name for this hook package is ``n86io/array-conf``.
 
 Example
 =======
 
-For using array-conf, first you need a configuration definition, which define the configuration keys and the types for
+For using array-conf, first you need a configuration definition which defines the configuration keys and the types for
 it.
 
-Here at first a complete definition-example:
+First, here is a complete definition-example:
 
 .. code-block:: php
 
@@ -53,7 +54,7 @@ Here at first a complete definition-example:
         ]
     ];
 
-A configuration for this template may be look like the following:
+A configuration for this template may look like the following:
 
 .. code-block:: php
 
@@ -75,7 +76,7 @@ A configuration for this template may be look like the following:
         ]
     ];
 
-And now create instance of class ``\N86io\ArrayConf\Configuration``:
+And now we create instance of class ``\N86io\ArrayConf\Configuration``:
 
 .. code-block:: php
 
@@ -86,7 +87,8 @@ And now create instance of class ``\N86io\ArrayConf\Configuration``:
     );
     $configuration->add($conf);
 
-You can add some further configuration arrays. The arrays will be merged. Second configuration will be overwrite first.
+You can add further configuration arrays. The arrays will be merged. The second configuration will overwrite the
+first.
 
 At last, just get the valid and merged configuration:
 
@@ -100,31 +102,33 @@ Types
 Base-Types (bool, int, float and string)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The base types are typical types how there are also in php.
+The base types are the primary types used by PHP. Only those four types are allowed.
 
 Wildcard-Type (*)
 ^^^^^^^^^^^^^^^^^
 
-This type means, that in the configuration no definite type are necessary.
+Using a wildcard will give you the option to use whatever type you want to use in the actual configuration except the
+array type which needs to be declared.
 
 Conf-Type (conf)
 ^^^^^^^^^^^^^^^^
 
-In example above under 'index5' showed, there is sub-configuration for configuration key.
+As shown in the example above in 'index5', there is sub-configuration for configuration key.
 
 List-Type (list)
 ^^^^^^^^^^^^^^^^
 
-Similar to 'conf'-type, but the configuration entries will be repeat. Each entry should have a key for it. Every
+Similar to 'conf'-type, but the configuration entries will be repeated. Each entry should have a key for it. Every
 configuration-entry should have same structure.
 
-If entry-keys are numeric, the entries will not be merged if same keys available. If on of the keys are not numeric,
-the entries with same key will be merged.
+If the entry-indexes are numeric, the entry-values will not be merged if the same indexes are available in both
+configurations. If one of the indexes is not numeric the entry-values with the same key will be merged.
 
 Flexible or strict key handling
 ===============================
 
-At creating instance of \N86io\ArrayConf\Configuration you have choice between flexible or strict key handling:
+During creation of an instance of \N86io\ArrayConf\Configuration you have a choice between
+``ConfigurationInterface::KEY_FLEXIBLE`` or ``ConfigurationInterface::KEY_STRICT`` key handling:
 
 .. code-block:: php
 
@@ -134,15 +138,16 @@ At creating instance of \N86io\ArrayConf\Configuration you have choice between f
         ConfigurationInterface::TYPE_CAST
     );
 
-This means, if you decided for ``ConfigurationInterface::KEY_STRICT``, in the configuration isn't allowed configure a
-key, who are not defined in configuration-definition. With ``ConfigurationInterface::KEY_FLEXIBLE`` however it doesn't
-matter, if the key is defined. If key is not defined, the type is either '*' or 'conf'. If value is an array, the type
-will be 'conf', otherwise '*'.
+This means if you decide to use ``ConfigurationInterface::KEY_STRICT``, in the configuration it isn't allowed to
+configure a key who is not specified in the configuration-definition. With ``ConfigurationInterface::KEY_FLEXIBLE``
+however it doesn't matter if the key is specified in the configuration-definition. If key is not defined, the type is
+either '*' or 'conf'. If the value is an array the type will be 'conf', otherwise '*'.
 
 Strict type or cast
 ===================
 
-For type there is also a choice between strict or cast:
+While deciding on a type there is a choice between the two options ``ConfigurationInterface::TYPE_CAST`` and
+``ConfigurationInterface::TYPE_STRICT``:
 
 .. code-block:: php
 
@@ -152,9 +157,10 @@ For type there is also a choice between strict or cast:
         ConfigurationInterface::TYPE_CAST <-- or ConfigurationInterface::TYPE_STRICT
     );
 
-With ``ConfigurationInterface::TYPE_CAST`` the value will be cast to defined type, but only the type in definition is
-a base-type, which are described above. With ``ConfigurationInterface::TYPE_STRICT`` differences between definition and
-value type are not allowed.
+When choosing ``ConfigurationInterface::TYPE_CAST`` the value will be cast to the defined type in the
+configuration-definition, but only if the type is a base-type as is described above. With
+``ConfigurationInterface::TYPE_STRICT`` differences between the defined type specified in the
+configuration-definition and the actual type used are not allowed.
 
 API Documentation
 =================
