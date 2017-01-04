@@ -118,8 +118,8 @@ List-Type (list)
 Similar to 'conf'-type, but the configuration entries will be repeat. Each entry should have a key for it. Every
 configuration-entry should have same structure.
 
-If keys are numeric, the entries will not be merged if same keys available. If on of the keys are not numeric, the
-entries with same key will be merged.
+If entry-keys are numeric, the entries will not be merged if same keys available. If on of the keys are not numeric,
+the entries with same key will be merged.
 
 Flexible or strict key handling
 ===============================
