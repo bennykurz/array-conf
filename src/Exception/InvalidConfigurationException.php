@@ -55,4 +55,18 @@ class InvalidConfigurationException extends \Exception
             1483365239
         );
     }
+
+    /**
+     * @param array  $keyPath
+     * @param string $expectedType
+     *
+     * @return InvalidConfigurationException
+     */
+    public static function keyNotFound(array $keyPath = [], string $expectedType = '')
+    {
+        return new self(
+            'Empty value for "' . implode(' > ', $keyPath) . '". Expected type "' . $expectedType . '".',
+            1483526068
+        );
+    }
 }

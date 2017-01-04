@@ -203,7 +203,7 @@ class ConfigurationTest extends TestCase
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionCode(1483365239);
-        $this->expectExceptionMessage('Invalid value for "index1". Expected type "int", got "float".');
+        $this->expectExceptionMessage('Invalid value for "* > index1". Expected type "int", got "float".');
         $confDefinition = [
             'index1' => [
                 'type' => 'int'
@@ -224,7 +224,7 @@ class ConfigurationTest extends TestCase
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionCode(1483365239);
-        $this->expectExceptionMessage('Invalid value for "index1". Expected type "conf", got "float".');
+        $this->expectExceptionMessage('Invalid value for "* > index1". Expected type "conf", got "float".');
         $confDefinition = [
             'index1' => [
                 'type'       => 'conf',
@@ -301,7 +301,7 @@ class ConfigurationTest extends TestCase
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionCode(1483365252);
-        $this->expectExceptionMessage('Undefined configuration key "index2" for "".');
+        $this->expectExceptionMessage('Undefined configuration key "index2" for "*".');
         $confDefinition = [
             'index1' => [
                 'type' => 'int'
@@ -323,7 +323,7 @@ class ConfigurationTest extends TestCase
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionCode(1483365252);
-        $this->expectExceptionMessage('Undefined configuration key "index1_3" for "index1 > def".');
+        $this->expectExceptionMessage('Undefined configuration key "index1_3" for "* > index1 > def".');
         $confDefinition = [
             'index1' => [
                 'type'       => 'list',
@@ -343,6 +343,63 @@ class ConfigurationTest extends TestCase
                     'index1_1' => 456,
                     'index1_2' => 4.56,
                     'index1_3' => 4.56
+                ]
+            ]
+        ];
+        $configuration = new Configuration(
+            $confDefinition,
+            ConfigurationInterface::KEY_STRICT,
+            ConfigurationInterface::TYPE_STRICT
+        );
+        $configuration->add($conf);
+    }
+
+    public function testKeyStrictException3()
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionCode(1483526068);
+        $this->expectExceptionMessage('Empty value for "* > index2". Expected type "float".');
+        $confDefinition = [
+            'index1' => [
+                'type' => 'int'
+            ],
+            'index2' => [
+                'type' => 'float'
+            ]
+        ];
+        $conf = [
+            'index1' => 123456789
+        ];
+        $configuration = new Configuration(
+            $confDefinition,
+            ConfigurationInterface::KEY_STRICT,
+            ConfigurationInterface::TYPE_STRICT
+        );
+        $configuration->add($conf);
+    }
+
+    public function testKeyStrictException4()
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionCode(1483526068);
+        $this->expectExceptionMessage('Empty value for "* > index1 > def > index1_2". Expected type "float".');
+        $confDefinition = [
+            'index1' => [
+                'type'       => 'list',
+                'definition' => [
+                    'index1_1' => [
+                        'type' => 'int'
+                    ],
+                    'index1_2' => [
+                        'type' => 'float'
+                    ]
+                ]
+            ]
+        ];
+        $conf = [
+            'index1' => [
+                'def' => [
+                    'index1_1' => 456
                 ]
             ]
         ];

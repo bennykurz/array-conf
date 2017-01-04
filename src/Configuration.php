@@ -18,6 +18,7 @@
 
 namespace N86io\ArrayConf;
 
+use N86io\ArrayConf\Exception\InvalidConfigurationException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -65,7 +66,7 @@ class Configuration implements ConfigurationInterface
 
     public function add(array $addConfiguration): ConfigurationInterface
     {
-        $this->addToConfiguration($this->configuration, $addConfiguration, $this->definition, []);
+        $this->addToConfiguration($this->configuration, $addConfiguration, $this->definition, ['*']);
 
         return $this;
     }
@@ -112,6 +113,7 @@ class Configuration implements ConfigurationInterface
         }
 
         $this->addDefault($configuration, $definition);
+        $this->checkMissingKeys($configuration, $definition, $keyPath);
     }
 
     /**
@@ -207,6 +209,34 @@ class Configuration implements ConfigurationInterface
                 continue;
             }
             $configuration[$key] = $item['default'];
+        }
+    }
+
+    /**
+     * If key-mode is strict, check if a key missed and thrown an exception if that case is true.
+     *
+     * @param array $configuration
+     * @param array $definition
+     * @param array $keyPath
+     *
+     * @throws InvalidConfigurationException
+     */
+    private function checkMissingKeys(array $configuration, array $definition, array $keyPath)
+    {
+        if ($this->flexibleKey) {
+            return;
+        }
+
+        foreach ($definition as $key => $item) {
+            if (TypeValidator::isTypeConf($item['type'])) {
+                continue;
+            }
+            if (isset($configuration[$key])) {
+                continue;
+            }
+            $defKeyPath = $keyPath;
+            $defKeyPath[] = $key;
+            throw InvalidConfigurationException::keyNotFound($defKeyPath, $item['type']);
         }
     }
 }
