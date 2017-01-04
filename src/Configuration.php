@@ -176,7 +176,17 @@ class Configuration implements ConfigurationInterface
         array $definition,
         array $keyPath
     ) {
+        $onlyNumeric = $this->hasOnlyNumericKeys($value) && $this->hasOnlyNumericKeys($configuration[$key]);
+        $highestIndex = null;
+        if ($onlyNumeric) {
+            $highestIndex = $this->getHighestIndex($configuration[$key]);
+        }
+
         foreach ($value as $listConfKey => $listConf) {
+            if ($onlyNumeric) {
+                $highestIndex++;
+                $listConfKey = $highestIndex;
+            }
             $listConfKeyPath = $keyPath;
             $listConfKeyPath[] = $listConfKey;
 
@@ -238,5 +248,34 @@ class Configuration implements ConfigurationInterface
             $defKeyPath[] = $key;
             throw InvalidConfigurationException::keyNotFound($defKeyPath, $item['type']);
         }
+    }
+
+    /**
+     * Returns true, if array keys are only numeric.
+     *
+     * @param array $array
+     *
+     * @return bool
+     */
+    private function hasOnlyNumericKeys(array $array): bool
+    {
+        return count(array_filter(array_keys($array), 'is_string')) === 0;
+    }
+
+    /**
+     * Returns highest index of array. If array contains no elements, then returns -1.
+     *
+     * @param array $array
+     *
+     * @return int
+     */
+    private function getHighestIndex(array $array): int
+    {
+        $keys = array_keys($array);
+        if (count($keys) === 0) {
+            return -1;
+        }
+
+        return max($keys);
     }
 }

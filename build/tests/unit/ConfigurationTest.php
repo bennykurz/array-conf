@@ -179,6 +179,105 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($expected, $configuration->get());
     }
 
+    public function testConfListAssociativeAndNumeric()
+    {
+        $confDefinition = [
+            'index1' => [
+                'type'       => 'list',
+                'definition' => [
+                    'index1_1' => [
+                        'type' => 'bool'
+                    ]
+                ]
+            ]
+        ];
+        $conf1 = [
+            'index1' => [
+                'abc' => [
+                    'index1_1' => true
+                ],
+                'def' => [
+                    'index1_1' => false
+                ]
+            ]
+        ];
+        $conf2 = [
+            'index1' => [
+                'def' => [
+                    'index1_1' => true
+                ],
+                'ghi' => [
+                    'index1_1' => false
+                ]
+            ]
+        ];
+        $expected = [
+            'index1' => [
+                'abc' => [
+                    'index1_1' => true
+                ],
+                'def' => [
+                    'index1_1' => true
+                ],
+                'ghi' => [
+                    'index1_1' => false
+                ]
+            ]
+        ];
+        $configuration = new Configuration(
+            $confDefinition,
+            ConfigurationInterface::KEY_STRICT,
+            ConfigurationInterface::TYPE_STRICT
+        );
+        $configuration->add($conf1)->add($conf2);
+        $this->assertEquals($expected, $configuration->get());
+
+
+        $conf1 = [
+            'index1' => [
+                [
+                    'index1_1' => true
+                ],
+                [
+                    'index1_1' => false
+                ]
+            ]
+        ];
+        $conf2 = [
+            'index1' => [
+                [
+                    'index1_1' => true
+                ],
+                [
+                    'index1_1' => false
+                ]
+            ]
+        ];
+        $expected = [
+            'index1' => [
+                [
+                    'index1_1' => true
+                ],
+                [
+                    'index1_1' => false
+                ],
+                [
+                    'index1_1' => true
+                ],
+                [
+                    'index1_1' => false
+                ]
+            ]
+        ];
+        $configuration = new Configuration(
+            $confDefinition,
+            ConfigurationInterface::KEY_STRICT,
+            ConfigurationInterface::TYPE_STRICT
+        );
+        $configuration->add($conf1)->add($conf2);
+        $this->assertEquals($expected, $configuration->get());
+    }
+
     public function testTypeStrict()
     {
         $confDefinition = [
