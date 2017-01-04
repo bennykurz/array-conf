@@ -29,130 +29,104 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigurationTest extends TestCase
 {
-    public function testKeyFlexibleAndTypeCast()
+    public function testKeyFlexible()
     {
         $confDefinition = [
             'index1' => [
                 'type' => 'string'
             ],
             'index2' => [
-                'type'    => 'int',
-                'default' => 246
+                'type'       => 'conf',
+                'definition' => [
+                    'index2_1' => [
+                        'type' => 'bool'
+                    ]
+                ]
+            ],
+            'index3' => [
+                'type'       => 'list',
+                'definition' => [
+                    'index3_1' => [
+                        'type' => 'int'
+                    ]
+                ]
+            ]
+        ];
+        $conf = [
+            'index1' => 'test',
+            'index2' => [
+                'index2_1' => true,
+                'index2_2' => false
+            ],
+            'index3' => [
+                'abc' => [
+                    'index3_1' => 1,
+                    'index3_2' => 2
+                ],
+                'def' => [
+                    'index3_3' => 3
+                ]
+            ],
+            'index4' => 3,
+            'index5' => [
+                'index5_1' => 'test'
+            ]
+        ];
+        $configuration = new Configuration(
+            $confDefinition,
+            ConfigurationInterface::KEY_FLEXIBLE,
+            ConfigurationInterface::TYPE_CAST
+        );
+        $configuration->add($conf);
+
+        $this->assertEquals($conf, $configuration->get());
+
+
+        $conf2 = [
+            'index2' => [
+                'index2_2' => true,
+                'index2_3' => false
+            ],
+            'index3' => [
+                'def' => [
+                    'index3_4' => 'test'
+                ]
+            ],
+            'index6' => 'test'
+        ];
+        $expected2 = $conf;
+        $expected2['index2']['index2_2'] = true;
+        $expected2['index2']['index2_3'] = false;
+        $expected2['index3']['def']['index3_4'] = 'test';
+        $expected2['index6'] = 'test';
+
+        $configuration->add($conf2);
+
+        $this->assertEquals($expected2, $configuration->get());
+    }
+
+    public function testTypeCast()
+    {
+        $confDefinition = [
+            'index1' => [
+                'type' => 'string'
+            ],
+            'index2' => [
+                'type' => 'int'
             ],
             'index3' => [
                 'type' => 'float'
-            ],
-            'index4' => [
-                'type'       => 'list',
-                'definition' => [
-                    'index4_1' => [
-                        'type' => 'int'
-                    ],
-                    'index4_2' => [
-                        'type' => 'float'
-                    ],
-                    'index4_3' => [
-                        'type'    => 'int',
-                        'default' => 123
-                    ]
-                ]
-            ],
-            'index5' => [
-                'type'       => 'conf',
-                'definition' => [
-                    'index5_1' => [
-                        'type' => 'bool'
-                    ],
-                    'index5_2' => [
-                        'type' => 'bool'
-                    ],
-                    'index5_3' => [
-                        'type' => '*'
-                    ],
-                    'index5_4' => [
-                        'type' => '*'
-                    ],
-                    'index5_5' => [
-                        'type' => '*'
-                    ],
-                    'index5_6' => [
-                        'type'    => 'int',
-                        'default' => 123
-                    ]
-                ]
             ]
         ];
-
-        $conf1 = [
-            'index1' => 123456789,
-            'index3' => 7.89,
-            'index4' => [
-                'abc' => [
-                    'index4_1' => 456,
-                    'index4_2' => 4.56
-                ],
-                'def' => [
-                    'index4_1' => 156,
-                    'index4_2' => 1.56
-                ]
-            ],
-            'index5' => [
-                'index5_1' => true,
-                'index5_2' => false,
-                'index5_3' => 55555555
-            ],
-            'index6' => 'hallo',
-            'index7' => [
-                'index7_1' => 'test',
-                'index7_2' => 'test2'
-            ]
+        $conf = [
+            'index1' => 1,
+            'index2' => '2',
+            'index3' => '3.4'
         ];
-        $conf2 = [
-            'index3' => 5.67,
-            'index4' => [
-                'abc' => [
-                    'index4_1' => 678
-                ],
-                'def' => [
-                    'index4_2' => 6.78
-                ]
-            ],
-            'index5' => [
-                'index5_3' => 'abc',
-                'index5_4' => 123,
-                'index5_5' => 1.23
-            ]
-        ];
-
         $expected = [
-            'index1' => '123456789',
-            'index2' => 246,
-            'index3' => 5.67,
-            'index4' => [
-                'abc' => [
-                    'index4_1' => 678,
-                    'index4_2' => 4.56,
-                    'index4_3' => 123
-                ],
-                'def' => [
-                    'index4_1' => 156,
-                    'index4_2' => 6.78,
-                    'index4_3' => 123
-                ]
-            ],
-            'index5' => [
-                'index5_1' => true,
-                'index5_2' => false,
-                'index5_3' => 'abc',
-                'index5_4' => 123,
-                'index5_5' => 1.23,
-                'index5_6' => 123
-            ],
-            'index6' => 'hallo',
-            'index7' => [
-                'index7_1' => 'test',
-                'index7_2' => 'test2'
-            ]
+            'index1' => '1',
+            'index2' => 2,
+            'index3' => 3.4
         ];
 
         $configuration = new Configuration(
@@ -160,7 +134,47 @@ class ConfigurationTest extends TestCase
             ConfigurationInterface::KEY_FLEXIBLE,
             ConfigurationInterface::TYPE_CAST
         );
-        $configuration->add($conf1)->add($conf2);
+        $configuration->add($conf);
+
+        $this->assertEquals($expected, $configuration->get());
+
+
+        $conf2 = [
+            'index2' => '5',
+            'index3' => 6.7
+        ];
+        $expected2 = $expected;
+        $expected2['index2'] = 5;
+        $expected2['index3'] = 6.7;
+
+        $configuration->add($conf2);
+        $this->assertEquals($expected2, $configuration->get());
+    }
+
+    public function testDefault()
+    {
+        $confDefinition = [
+            'index1' => [
+                'type'    => 'string',
+                'default' => 'defaulttest'
+            ],
+            'index2' => [
+                'type'    => 'int',
+                'default' => 123
+            ]
+        ];
+        $conf = [
+            'index1' => 'test'
+        ];
+        $expected = $conf;
+        $expected['index2'] = 123;
+
+        $configuration = new Configuration(
+            $confDefinition,
+            ConfigurationInterface::KEY_FLEXIBLE,
+            ConfigurationInterface::TYPE_CAST
+        );
+        $configuration->add($conf);
 
         $this->assertEquals($expected, $configuration->get());
     }
